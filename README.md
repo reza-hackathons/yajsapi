@@ -13,7 +13,6 @@
 <br/><br/>
 
 # Building the Library
-_(not needed for running examples)_
 ### Installation
 - run `yarn` in main folder
 
@@ -32,10 +31,11 @@ export YAGNA_APPKEY=your_yagna_app_key_here
 ```
 
 ### When ready
-- `npm run js:blender`  will start blender javascript example
-- `npm run ts:blender`  will start blender typescript example
-- `npm run js:low`      will start javascript low level api example
-- `npm run ts:low`      will start typescript low level api example
+- `npm run js:blender`    will start blender javascript example
+- `npm run ts:blender`    will start blender typescript example
+- `npm run js:low`        will start javascript low level api example
+- `npm run ts:low`        will start typescript low level api example
+- `npm run ts:greetings`  will start typescript greetings example
 
 ### Need more logs
 Call `-d` or `--debug` flag on your example script, e.g. `npm run ts:blender -- -d`

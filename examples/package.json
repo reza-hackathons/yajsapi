@@ -6,6 +6,7 @@
     "scripts": {
         "js:blender": "node ./blender/blender.js",
         "ts:blender": "ts-node-script ./blender/blender.ts",
+        "ts:greetings": "ts-node-script ./greetings/Greetings.ts",
         "js:low": "node ./low-level-api/listOffers.js",
         "ts:low": "ts-node-script ./low-level-api/listOffers.ts"
     },

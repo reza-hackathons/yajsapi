@@ -17,37 +17,14 @@ async function main(subnetTag: string) {
   );
 
   async function* worker(ctx: WorkContext, tasks) {
-    ctx.send_file(
-      path.join(__dirname, "./cubes.blend"),
-      "/golem/resource/scene.blend"
-    );
-
+    const args: any = ["-c", "echo 'Hello World!' > /golem/output/greetings.txt;"]
     for await (let task of tasks) {
-      let frame: any = task.data();
-      let crops = [
-        {
-          outfilebasename: "out",
-          borders_x: [0.0, 1.0],
-          borders_y: [0.0, 1.0],
-        },
-      ];
-      ctx.send_json("/golem/work/params.json", {
-        scene_file: "/golem/resource/scene.blend",
-        resolution: [400, 300],
-        use_compositing: false,
-        crops: crops,
-        samples: 100,
-        frames: [frame],
-        output_format: "PNG",
-        RESOURCES_DIR: "/golem/resources",
-        WORK_DIR: "/golem/work",
-        OUTPUT_DIR: "/golem/output",
-      });
-      ctx.run("/golem/entrypoints/run-blender.sh");
-      const output_file = `output_${frame.toString()}.png`
+      ctx.run("/bin/sh",
+              args)
+      const output_file = "greetings.txt"
       ctx.download_file(
-        `/golem/output/out${frame.toString().padStart(4, "0")}.png`,
-        path.join(__dirname, `./output_${frame}.png`)
+        `/golem/output/${output_file}`,
+        path.join(__dirname, `./${output_file}`)
       );
       yield ctx.commit();
       // TODO: Check
@@ -56,13 +33,12 @@ async function main(subnetTag: string) {
       task.accept_task(output_file);
     }
 
-    ctx.log("no more frames to render");
+    ctx.log("You've been greeted!\n");
     return;
   }
 
-  const frames: any[] = range(0, 60, 10);
   const timeout: number = dayjs.duration({ minutes: 15 }).asMilliseconds();
-
+  const tasks: any[] = range(0, 1, 1);
   await asyncWith(
     await new Engine(
       _package,
@@ -76,7 +52,7 @@ async function main(subnetTag: string) {
     async (engine: Engine): Promise<void> => {
       for await (let task of engine.map(
         worker,
-        frames.map((frame) => new Task(frame))
+        tasks.map((data) => new Task(data))
       )) {
         console.log("result=", task.output());
       }
